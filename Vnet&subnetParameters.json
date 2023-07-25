@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vnetName": {
+            "value": "LAB-Windows-VNET"
+        },
+        "vnetAddressSpace": {
+            "value": "192.168.0.0/20"
+        },
+        "subnetName": {
+            "value": "LAB-Windows-Subnet"
+        },
+        "subnetAddressSpace": {
+            "value": "192.168.1.0/24"
+        },
+        "location": {
+            "value": "eastus"
+        },
+        "dnsServers": {
+            "value": ["10.195.2.10"]
+        },
+        "nsgName": {
+            "value": "LAB-Windows-NSG"
+        },
+        "nsgRuleName": {
+            "value": "AllowAnyToAny"
+        }
+    }
+}
