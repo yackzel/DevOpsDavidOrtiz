@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "LABWindowsVNetName": {
+            "value": "LAB-Windows-VNET"
+        },
+        "coreNetProdVNetName": {
+            "value": "corenetprodvnet01"
+        },
+        "coreNetProdVNetSubscriptionId": {
+            "value": "ecf57f54-4d38-4e8d-86f9-283e14ad0edd"
+        },
+        "coreNetProdVNetResourceGroup": {
+            "value": "corenet-prod-rg"
+        }
+    }
+}

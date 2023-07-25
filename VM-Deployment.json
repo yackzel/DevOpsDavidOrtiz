@@ -1,0 +1,278 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vNetId": {
+      "type": "string"
+    },
+    "subnetId": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "vmsize": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "labWappImagePublisher": {
+      "type": "string"
+    },
+    "labWappImageOffer": {
+      "type": "string"
+    },
+    "labWappImageSku": {
+      "type": "string"
+    },
+    "labWcluImageSku": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2021-02-01",
+      "name": "LAB-WAPP-1-nic",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[parameters('subnetId')]"
+              },
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "192.168.1.5"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2021-02-01",
+      "name": "LAB-WCLU-1-nic",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[parameters('subnetId')]"
+              },
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "192.168.1.6"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2021-02-01",
+      "name": "LAB-WCLU-2-nic",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[parameters('subnetId')]"
+              },
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "192.168.1.7"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2021-04-01",
+      "name": "LAB-WAPP-1",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "LAB-WAPP-1-nic"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmsize')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('labWappImagePublisher')]",
+            "offer": "[parameters('labWappImageOffer')]",
+            "sku": "[parameters('labWappImageSku')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        },
+        "osProfile": {
+          "computerName": "LAB-WAPP-1",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'LAB-WAPP-1-nic')]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "type": "extensions",
+          "apiVersion": "2021-07-01",
+          "name": "joinDomain",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "LAB-WAPP-1"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "CustomScriptExtension",
+            "typeHandlerVersion": "1.10",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "fileUris": [
+                "https://spstestsp.blob.core.windows.net/scripts/DomainController-Automated-AddtoDomainV1.ps1"
+              ],
+              "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File DomainController-Automated-AddtoDomainV1.ps1"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2021-04-01",
+      "name": "LAB-WCLU-1",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "LAB-WCLU-1-nic"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmsize')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('labWappImagePublisher')]",
+            "offer": "[parameters('labWappImageOffer')]",
+            "sku": "[parameters('labWcluImageSku')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        },
+        "osProfile": {
+          "computerName": "LAB-WCLU-1",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'LAB-WCLU-1-nic')]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "type": "extensions",
+          "apiVersion": "2021-07-01",
+          "name": "joinDomain",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "LAB-WCLU-1"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "CustomScriptExtension",
+            "typeHandlerVersion": "1.10",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "fileUris": [
+                "https://spstestsp.blob.core.windows.net/scripts/Install-FailoverRole-DomainJOINV1.ps1"
+              ],
+              "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File Install-FailoverRole-DomainJOINV1.ps1"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2021-04-01",
+      "name": "LAB-WCLU-2",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "LAB-WCLU-2-nic"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmsize')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('labWappImagePublisher')]",
+            "offer": "[parameters('labWappImageOffer')]",
+            "sku": "[parameters('labWcluImageSku')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        },
+        "osProfile": {
+          "computerName": "LAB-WCLU-2",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'LAB-WCLU-2-nic')]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "type": "extensions",
+          "apiVersion": "2021-07-01",
+          "name": "joinDomain",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "LAB-WCLU-2"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "CustomScriptExtension",
+            "typeHandlerVersion": "1.10",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "fileUris": [
+                "https://spstestsp.blob.core.windows.net/scripts/Install-FailoverRole-DomainJOINV1.ps1"
+              ],
+              "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File Install-FailoverRole-DomainJOINV1.ps1"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

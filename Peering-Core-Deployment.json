@@ -1,0 +1,34 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "LABWindowsVNetName": {
+            "type": "string"
+        },
+        "coreNetProdVNetName": {
+            "type": "string"
+        },
+        "currentSubscriptionId": {
+            "type": "string"
+        },
+        "LABWindowsVNetResourceGroup": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2020-07-01",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "name": "[concat(parameters('coreNetProdVNetName'), '/To', parameters('LABWindowsVNetName'))]",
+            "properties": {
+                "remoteVirtualNetwork": {
+                    "id": "[concat('/subscriptions/', parameters('currentSubscriptionId'), '/resourceGroups/', parameters('LABWindowsVNetResourceGroup'), '/providers/Microsoft.Network/virtualNetworks/', parameters('LABWindowsVNetName'))]"
+                },
+                "allowForwardedTraffic": true,
+                "allowVirtualNetworkAccess": true,
+                "useRemoteGateways": false,
+                "allowGatewayTransit": true
+            }
+        }
+    ]
+}

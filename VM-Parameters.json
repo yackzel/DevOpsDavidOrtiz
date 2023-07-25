@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vNetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks', 'LAB-Windows-VNET')]"
+        },
+        "subnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'LAB-Windows-VNET', 'LAB-Windows-Subnet')]"
+        },
+        "adminUsername": {
+            "value": "evtcladm"
+        },
+        "adminPassword": {
+            "value": "Evertec@work1234"
+        },
+        "vmsize": {
+            "value": "Standard_B2ms"
+        },
+        "location": {
+            "value": "[resourceGroup().location]"
+        },
+        "labWappImagePublisher": {
+            "value": "MicrosoftWindowsServer"
+        },
+        "labWappImageOffer": {
+            "value": "WindowsServer"
+        },
+        "labWappImageSku": {
+            "value": "2016-Datacenter"
+        },
+        "labWcluImageSku": {
+            "value": "2019-Datacenter"
+        }
+    }
+}

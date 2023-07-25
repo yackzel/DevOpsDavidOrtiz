@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "LABWindowsVNetName": {
+            "value": "LAB-Windows-VNET"
+        },
+        "coreNetProdVNetName": {
+            "value": "corenetprodvnet01"
+        },
+        "currentSubscriptionId": {
+            "value": "d177c660-3754-4481-bd12-3538d0e09271"
+        },
+        "LABWindowsVNetResourceGroup": {
+            "value": "SandBox-Win-RG"
+        }
+    }
+}
