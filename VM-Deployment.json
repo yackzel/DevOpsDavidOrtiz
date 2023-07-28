@@ -2,10 +2,10 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "vNetId": {
+    "vNetName": {
       "type": "string"
     },
-    "subnetId": {
+    "subnetName": {
       "type": "string"
     },
     "adminUsername": {
@@ -45,7 +45,7 @@
             "name": "ipconfig1",
             "properties": {
               "subnet": {
-                "id": "[parameters('subnetId')]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vNetName'), parameters('subnetName'))]"
               },
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "192.168.1.5"
@@ -65,7 +65,7 @@
             "name": "ipconfig1",
             "properties": {
               "subnet": {
-                "id": "[parameters('subnetId')]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vNetName'), parameters('subnetName'))]"
               },
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "192.168.1.6"
@@ -85,7 +85,7 @@
             "name": "ipconfig1",
             "properties": {
               "subnet": {
-                "id": "[parameters('subnetId')]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vNetName'), parameters('subnetName'))]"
               },
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "192.168.1.7"
@@ -146,9 +146,9 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
-                "https://spstestsp.blob.core.windows.net/scripts/DomainController-Automated-AddtoDomainV1.ps1"
+                "https://spstestsp.blob.core.windows.net/scripts/Keyvault-DomainJoin-Automation.ps1"
               ],
-              "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File DomainController-Automated-AddtoDomainV1.ps1"
+              "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File Keyvault-DomainJoin-Automation.ps1"
             }
           }
         }
